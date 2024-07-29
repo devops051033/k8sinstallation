@@ -1,0 +1,62 @@
+---
+- name: Install Kubernetes components on Ubuntu nodes
+  hosts: ubuntu_nodes
+  become: yes
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install necessary packages
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gpg
+        state: present
+
+    - name: Add Kubernetes APT key
+      ansible.builtin.shell: |
+        curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+      args:
+        creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+    - name: Add Kubernetes APT repository
+      copy:
+        content: 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /'
+        dest: /etc/apt/sources.list.d/kubernetes.list
+
+    - name: Update apt cache again
+      apt:
+        update_cache: yes
+
+    - name: Install Kubernetes components
+      apt:
+        name:
+          - kubelet=1.28.0-1.1
+          - kubeadm=1.28.0-1.1
+          - kubectl=1.28.0-1.1
+        state: present
+
+    - name: Hold Kubernetes components at current version
+      ansible.builtin.shell: |
+        sudo apt-mark hold kubelet kubeadm kubectl
+
+    - name: Check kubelet version
+      command: kubelet --version
+      register: kubelet_version_output
+
+    - name: Debug kubelet version
+      debug:
+        msg: "{{ kubelet_version_output.stdout }}"
+
+    - name: Check kubeadm version
+      command: kubeadm version
+      register: kubeadm_version_output
+
+    - name: Debug kubeadm version
+      debug:
+        msg: "{{ kubeadm_version_output.stdout }}"
+
