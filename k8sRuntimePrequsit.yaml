@@ -1,4 +1,12 @@
 ---
+- name: Disabling swap...
+  hosts: controlplane
+  become: yes
+
+  tasks:
+    - name: Disable swap
+      command: swapoff -a
+
 - name: Setup Kubernetes prerequisites on Ubuntu nodes
   hosts: ubuntu_nodes
   become: yes
