@@ -1,0 +1,49 @@
+---
+- name: Initialize Kubernetes cluster
+  hosts: controlplane
+  become: yes
+
+  tasks:
+    - name: Initialize the Kubernetes cluster
+      command: kubeadm init
+      register: kubeadm_init_output
+
+    - name: Print kubeadm init output
+      debug:
+        msg: "{{ kubeadm_init_output.stdout }}"
+
+    - name: Create .kube directory for the current user
+      ansible.builtin.shell: "mkdir -p /home/{{ ansible_ssh_user }}/.kube"
+      become: false
+
+    - name: Copy Kubernetes admin.conf to user's kube config
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: /home/{{ ansible_ssh_user }}/.kube/config
+        remote_src: yes
+      become: yes
+
+    - name: Change ownership of the kube config file
+      file:
+        path: /home/{{ ansible_ssh_user }}/.kube/config
+        owner: "{{ ansible_ssh_user }}"
+        group: "{{ ansible_ssh_user }}"
+        mode: '0644'
+      become: yes
+
+    - name: Check the config file ownership
+      command: ls -l /home/{{ ansible_ssh_user }}/.kube/config
+      register: kubeconfig_ls_output
+
+    - name: Print the ownership of the config file
+      debug:
+        msg: "{{ kubeconfig_ls_output.stdout }}"
+
+    - name: Verify kubectl access to the cluster
+      command: kubectl get nodes
+      register: kubectl_get_nodes_output
+
+    - name: Print kubectl get nodes output
+      debug:
+        msg: "{{ kubectl_get_nodes_output.stdout }}"
+
