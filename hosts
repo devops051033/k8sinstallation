@@ -1,0 +1,9 @@
+[all_nodes]
+ansible@172.16.66.144 ansible_ssh_user=ansible ansible_become=yes ansible_become_pass=ansible
+ansible@172.16.66.145 ansible_ssh_user=ansible ansible_become=yes ansible_become_pass=ansible
+
+[controlplane]
+ansible@172.16.66.144 ansible_ssh_user=ansible ansible_become=yes ansible_become_pass=ansible
+
+[nodes]
+ansible@172.16.66.145 ansible_ssh_user=ansible ansible_become=yes ansible_become_pass=ansible
