@@ -1,6 +1,6 @@
 ---
 - name: Configure UFW Firewall Rules
-  hosts: all
+  hosts: controlplane
   become: yes
   tasks:
     - name: Ensure UFW is installed
