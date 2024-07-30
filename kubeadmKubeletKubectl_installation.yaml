@@ -1,6 +1,6 @@
 ---
 - name: Install Kubernetes components on Ubuntu nodes
-  hosts: ubuntu_nodes
+  hosts: controlplane
   become: yes
 
   tasks:
