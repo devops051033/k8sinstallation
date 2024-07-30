@@ -1,17 +1,13 @@
 ---
-- name: Disabling swap...
+
+- name: Setup Kubernetes prerequisites on Ubuntu nodes
   hosts: controlplane
   become: yes
 
   tasks:
     - name: Disable swap
       command: swapoff -a
-
-- name: Setup Kubernetes prerequisites on Ubuntu nodes
-  hosts: ubuntu_nodes
-  become: yes
-
-  tasks:
+      
     - name: Load kernel modules
       block:
         - name: Create k8s.conf for kernel modules
