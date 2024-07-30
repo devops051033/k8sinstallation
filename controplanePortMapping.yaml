@@ -1,0 +1,68 @@
+---
+- name: Configure UFW Firewall Rules
+  hosts: all
+  become: yes
+  tasks:
+    - name: Ensure UFW is installed
+      package:
+        name: ufw
+        state: present
+
+    - name: Enable UFW
+      command: ufw enable
+      args:
+        warn: no
+
+    - name: Allow SSH on port 22
+      ufw:
+        rule: allow
+        name: 'SSH'
+        port: 22
+        proto: tcp
+
+    - name: Allow API Server on port 6443
+      ufw:
+        rule: allow
+        port: 6443
+        proto: tcp
+
+    - name: Allow etcd ports (2379, 2380) from 172.16.0.0/16
+      ufw:
+        rule: allow
+        from_ip: 172.16.0.0/16
+        port: 2379
+        proto: tcp
+
+    - name: Allow etcd ports (2379, 2380) from 172.16.0.0/16
+      ufw:
+        rule: allow
+        from_ip: 172.16.0.0/16
+        port: 2380
+        proto: tcp
+
+    - name: Allow kubelet port 10250 from 172.16.0.0/16
+      ufw:
+        rule: allow
+        from_ip: 172.16.0.0/16
+        port: 10250
+        proto: tcp
+
+    - name: Allow kube-scheduler port 10259 from 172.16.0.0/16
+      ufw:
+        rule: allow
+        from_ip: 172.16.0.0/16
+        port: 10259
+        proto: tcp
+
+    - name: Allow kube-controller-manager port 10257 from 172.16.0.0/16
+      ufw:
+        rule: allow
+        from_ip: 172.16.0.0/16
+        port: 10257
+        proto: tcp
+
+    - name: Reload UFW to apply changes
+      command: ufw reload
+      args:
+        warn: no
+
