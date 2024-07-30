@@ -61,3 +61,11 @@
 
     - name: Reload UFW to apply changes
       command: ufw reload
+    
+    - name: Show all UFW rules
+      command: ufw status verbose
+      register: ufw_status
+
+    - name: Display UFW rules
+      debug:
+        var: ufw_status.stdout
