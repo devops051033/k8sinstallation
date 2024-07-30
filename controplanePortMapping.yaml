@@ -15,7 +15,6 @@
     - name: Allow SSH on port 22
       ufw:
         rule: allow
-        name: 'SSH'
         port: 22
         proto: tcp
 
@@ -62,4 +61,3 @@
 
     - name: Reload UFW to apply changes
       command: ufw reload
-
