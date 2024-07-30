@@ -1,3 +1,4 @@
 ---
 - import_playbook: k8sRuntimePrequsit.yaml
 - import_playbook: kubeadmKubeletKubectl_installation.yaml
+- import_playbook: clusterInitialization.yaml
